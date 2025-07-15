@@ -2,7 +2,7 @@
 import { motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import {VideoCameraIcon, PhotoIcon, FolderIcon, CogIcon} from '@heroicons/react/24/solid';
 import LoadingIndicator from '../LoadingIndicator';
 import { ChevronLeftIcon, ChevronRightIcon, EditIcon, EyeIcon } from 'lucide-react';
@@ -13,10 +13,18 @@ export default function Home() {
 
   const { reports } = useReportData();
 
-  const searchParams = useSearchParams();
-  const branch = searchParams.get('branch');
-  const cat = searchParams.get('cat');
-  const page = searchParams.get('page');
+  const [branch, setBranch] = useState(null);
+  const [cat, setCat] = useState(null);
+  const [page, setPage] = useState(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params) {
+        setBranch(params.get('branch'));
+        setCat(params.get('cat'));
+        setPage(params.get('page'));
+    }
+  }, []);
   
   if (!branch || !cat || !page) {
     return (

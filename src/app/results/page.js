@@ -8,7 +8,6 @@ import LoadingIndicator from '../LoadingIndicator';
 import { ChevronLeftIcon, DownloadIcon, EditIcon, TrashIcon } from 'lucide-react';
 import { fetchResults } from '../../api/calls';
 import { saveAs } from 'file-saver';
-import { useSearchParams } from 'next/navigation';
 import { useReportData } from '@/lib/ReportsContext';
 
 export default function Home() {
@@ -16,8 +15,12 @@ export default function Home() {
 
   const { results, removeVariable } = useReportData();
 
-  const searchParams = useSearchParams();
-  const branch = searchParams.get('branch') || 'test';
+  const [branch, setBranch] = useState('test');
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params && params.get('branch')) setBranch(params.get('branch'));
+  }, []);
 
   function getVariablesUsedInKey(key) {
     const usedVars = new Set();

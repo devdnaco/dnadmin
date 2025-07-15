@@ -2,7 +2,7 @@
 import { motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import {VideoCameraIcon, PhotoIcon, FolderIcon, CogIcon} from '@heroicons/react/24/solid';
 import LoadingIndicator from '../LoadingIndicator';
 import { ChevronLeftIcon, ChevronRightIcon, EditIcon, EyeIcon } from 'lucide-react';
@@ -13,9 +13,12 @@ export default function Home() {
 
   const { reportCategories, reports } = useReportData();
 
-  const searchParams = useSearchParams();
-  const branch = searchParams.get('branch') || 'test';
-  
+  const [branch, setBranch] = useState('test');
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params && params.get('branch')) setBranch(params.get('branch'));
+  }, []);
   
     return (
       <div className="w-full min-h-screen flex flex-col p-10">

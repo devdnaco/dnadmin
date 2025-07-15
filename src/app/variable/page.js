@@ -1,5 +1,5 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { act, useEffect, useState } from "react";
 import { ChevronLeft, ChevronLeftIcon, DeleteIcon, MinusCircleIcon, MinusIcon, PlusCircleIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
@@ -14,9 +14,14 @@ export default function Home() {
   const [loadingSave, setLoadingSave] = useState(false);
   const { results, addVariable, reportDataLoading } = useReportData();
 
-  const searchParams = useSearchParams();
-  const editingVariable = searchParams.get('variable');
-  const branch = searchParams.get('branch') || 'test';
+  const [branch, setBranch] = useState('test');
+  const [editingVariable, setEditingVariable] = useState(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params && params.get('branch')) setBranch(params.get('branch'));
+    if (params && params.get('variable')) setEditingVariable(params.get('variable'));
+  }, []);
 
   const [variableName, setVariableName] = useState("");
   const [returnType, setReturnType] = useState(0);
